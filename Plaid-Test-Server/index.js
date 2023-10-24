@@ -18,9 +18,9 @@ require('dotenv').config();
 console.log(PLAID.environments);
 
 const plaidClient = new PLAID.Client({
-    clientID: process.env.PLAID_CLIENT_ID,
-    secret: process.env.PLAIID_SECRET,
-    env: PLAID.environments.sandbox
+    clientID: "",
+    secret: "",
+    env: "sandbox",
 });
 
 app.get('/create-link-token', async (req, res) => {
