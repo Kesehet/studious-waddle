@@ -5,7 +5,7 @@ INTERVAL=600
 
 while true; do
     # Navigate to your repository
-    cd /path/to/your/repo
+    cd .
 
     # Fetch updates from the remote repository
     git fetch
