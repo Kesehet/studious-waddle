@@ -5,17 +5,21 @@ INTERVAL=600
 
 while true; do
     # Navigate to your repository
-    cd .
+    cd /path/to/your/repo
 
     # Fetch updates from the remote repository
     git fetch
 
-    # Check for updates from the remote repository
-    UPDATES=$(git diff HEAD..origin/master)
+    # Check if origin/master is a valid reference
+    git rev-parse --verify origin/master > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        # Check for updates from the remote repository
+        UPDATES=$(git diff HEAD..origin/master)
 
-    # If there are updates, pull the changes
-    if [ ! -z "$UPDATES" ]; then
-        git pull
+        # If there are updates, pull the changes
+        if [ ! -z "$UPDATES" ]; then
+            git pull
+        fi
     fi
 
     # Check for file changes in the local repository
