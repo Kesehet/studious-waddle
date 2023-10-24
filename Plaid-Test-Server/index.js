@@ -26,7 +26,7 @@ app.get('/create-link-token', async (req, res) => {
             client_user_id: "My User ID",
         },
         client_name: "My Client Name",
-        products: ["auth"],
+        products: ["auth","identity"],
         country_codes: ["US"],
         language: "en"
     });

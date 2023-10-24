@@ -5,7 +5,30 @@
 
 <script>
     (async ($)=>{
+        const fetchLinkToken = async () => {
+            const response = await fetch('/create-link-token');
+            const {linkToken} = await response.json();
+            return linkToken;
+        }
 
+        const handler = Plaid.create (
+            {
+                "token" : await fetchLinkToken(),
+                "onSuccess" : async (publicToken, metadata) => {
+                    console.log(publicToken);
+                    console.log(metadata);
+                    await fetch('/token-exchange', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            public_token
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                }
+            }
+        )
     })(jQuery);
 
 </script>
