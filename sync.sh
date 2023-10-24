@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set an interval for checking updates, for example, every 10 minutes
-INTERVAL=600
+INTERVAL=10
 
 while true; do
     # Navigate to your repository
@@ -16,9 +16,9 @@ while true; do
         # Check for updates from the remote repository
         UPDATES=$(git diff HEAD..origin/master)
 
-        # If there are updates, pull the changes
+        # If there are updates, pull and rebase the changes
         if [ ! -z "$UPDATES" ]; then
-            git pull
+            git pull --rebase
         fi
     fi
 
