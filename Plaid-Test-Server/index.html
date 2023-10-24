@@ -1,55 +1,65 @@
-<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-
-<script>
-  async function initializePlaid() {
-    const fetchLinkToken = async () => {
-        const response = await fetch('/create-link-token');
-        const data = await response.json();
-        console.log(data);  // Log the response data
-        const {link_token} = data;
-        return link_token;
-    }
-
-
-    const linkToken = await fetchLinkToken();
-    console.log(linkToken);  // Log the linkToken value
-    const handler = Plaid.create({
-      token: linkToken,
-      onSuccess: async (publicToken, metadata) => {
-        console.log(publicToken);
-        console.log(metadata);
-        await fetch('/token-exchange', {
-          method: 'POST',
-          body: JSON.stringify({
-            public_token: publicToken
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-      },
-      onExit: async (err, metadata) => {
-        console.log(err);
-        console.log(metadata);
-      },
-      onEvent: async (eventName, metadata) => {
-        console.log(eventName);
-        console.log(metadata);
-      }
-    });
-
-    $('#plaid-button').on('click', () => {
-      handler.open();
-    });
-  }
-
-  $(document).ready(function() {
-    initializePlaid();
-  });
-
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plaid Quick Start</title>
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
 
 <h1>Plaid Quick Start</h1>
-<button id="plaid-button">Link your account vie Plaid!</button>
+<button id="plaid-button">Link your account via Plaid!</button>
+
+<script>
+    async function fetchLinkToken() {
+        try {
+            const response = await fetch('/create-link-token');
+            const data = await response.json();
+            console.log(data);  // Log the response data
+            const { link_token } = data;
+            return link_token;
+        } catch (error) {
+            console.error('Error fetching link token:', error);
+        }
+    }
+
+    async function initializePlaid() {
+        try {
+            const linkToken = await fetchLinkToken();
+            console.log(linkToken);  // Log the linkToken value
+            
+            const handler = Plaid.create({
+                token: linkToken,
+                onSuccess: async (publicToken, metadata) => {
+                    console.log(publicToken, metadata);
+                    await fetch('/token-exchange', {
+                        method: 'POST',
+                        body: JSON.stringify({ public_token: publicToken }),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                },
+                onExit: (err, metadata) => {
+                    console.log(err, metadata);
+                },
+                onEvent: (eventName, metadata) => {
+                    console.log(eventName, metadata);
+                }
+            });
+
+            $('#plaid-button').on('click', () => {
+                handler.open();
+            });
+        } catch (error) {
+            console.error('Error initializing Plaid:', error);
+        }
+    }
+
+    $(document).ready(function() {
+        initializePlaid();
+    });
+</script>
+
+</body>
+</html>
