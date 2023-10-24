@@ -10,27 +10,23 @@ while true; do
     # Fetch updates from the remote repository
     git fetch
 
-    # Check if origin/master is a valid reference
-    git rev-parse --verify origin/master > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        # Check for updates from the remote repository
-        UPDATES=$(git diff HEAD..origin/master)
-
-        # If there are updates, pull and rebase the changes
-        if [ ! -z "$UPDATES" ]; then
-            git pull --rebase
-        fi
-    fi
+    # Rebase to ensure local branch is up-to-date with remote branch
+    git pull --rebase
 
     # Check for file changes in the local repository
     CHANGES=$(git status --porcelain)
 
-    # If there are changes, add, commit, and push the changes
+    # If there are changes, add, commit
     if [ ! -z "$CHANGES" ]; then
         git add .
         git commit -m "Automated commit"
-        git push
     fi
+
+    # Rebase again to ensure local branch is up-to-date with remote branch
+    git pull --rebase
+
+    # Now push the changes
+    git push
 
     # Sleep for the defined interval before checking again
     sleep $INTERVAL
