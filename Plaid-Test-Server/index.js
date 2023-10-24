@@ -22,6 +22,8 @@ const plaidClient = new PLAID.PlaidApi({
 
 app.get('/create-link-token', async (req, res) => {
     const requestPayload = {
+        client_id: "65301fbca34480001b50a4a8",
+        secret: "fbfcfcf691aace4753f9e9dba2a207",
         user: {
             client_user_id: "My User ID",
         },
@@ -45,6 +47,7 @@ app.get('/create-link-token', async (req, res) => {
         res.status(500).send('Server Error');
     }
 });
+
 
 app.post('/token-exchange', async (req, res) => {  // Fixed the route by adding /
     const { publicToken } = req.body;
