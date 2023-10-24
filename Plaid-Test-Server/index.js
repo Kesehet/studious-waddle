@@ -14,8 +14,6 @@ const plaid = require('plaid');
 
 // There are 3 environments to choose from Sandbox , Development and Production
 
-// testing ...
-
 const plaidClient = new plaid.Client({
     clientID: process.env.PLAIID_CLIENT_ID,
     secret: process.env.PLAIID_SECRET,
