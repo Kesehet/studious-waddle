@@ -26,7 +26,16 @@
                             'Content-Type': 'application/json'
                         }
                     });
+                },
+                "onExit" : async (err, metadata) => {
+                    console.log(err);
+                    console.log(metadata);
+                },
+                "onEvent" : async (eventName, metadata) => {
+                    console.log(eventName);
+                    console.log(metadata);
                 }
+
             }
         )
 
