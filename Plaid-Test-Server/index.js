@@ -15,9 +15,9 @@ require('dotenv').config();
 
 // There are 3 environments to choose from Sandbox , Development and Production
 
-console.log(PLAID.environments);
+console.log(PLAID);
 
-const plaidClient = new PLAID.Client({
+const plaidClient = new PLAID.PlaidApi({
     clientID: "65301fbca34480001b50a4a8",
     secret: "fbfcfcf691aace4753f9e9dba2a207",
     env: "sandbox",
