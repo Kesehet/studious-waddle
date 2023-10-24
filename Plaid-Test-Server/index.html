@@ -15,7 +15,20 @@
             margin: 0;
             display: grid;
             place-items: center;
-            background-color: #f0f0f0;
+            background-color: #34495e;
+            overflow: hidden;
+        }
+        @keyframes blink {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.9;
+            }
+            100% {
+                opacity: 1;
+            }
         }
 
         .w3-container {
@@ -23,6 +36,7 @@
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            animation: blink 30s linear infinite;
         }
 
         button {
@@ -35,17 +49,23 @@
             color: #ffffff;
         }
 
-        button:hover {
-            background-color: #34495e;
+        .buttonColor {
+            background-color: #34495e !important;
+            color:white !important;
+        }
+
+        .buttonColor:hover {
+            background-color: #fff !important;
+            color: #34495e !important;
         }
 
     </style>
 </head>
 <body>
 
-<div class="w3-container w3-animate-opacity">
-    <h1>Plaid Quick Start</h1>
-    <button id="plaid-button" class="w3-button w3-large">Link your account via Plaid!</button>
+<div class="w3-container w3-animate-opacity w3-card">
+    <h1 class="w3-animate-left">Quick Start!</h1>
+    <button id="plaid-button" class="w3-button w3-large  w3-animate-left buttonColor">Lets get you linked with Plaid ></button>
 </div>
 
 </body>
