@@ -10,14 +10,17 @@ const PORT = process.env.PORT || 3000;
 
 const path = require('path');
 const util = require('util');
-const plaid = require('plaid');
+const PLAID = require('plaid');
+require('dotenv').config();
 
 // There are 3 environments to choose from Sandbox , Development and Production
 
-const plaidClient = new plaid.Client({
-    clientID: process.env.PLAIID_CLIENT_ID,
+console.log(PLAID.environments);
+
+const plaidClient = new PLAID.Client({
+    clientID: process.env.PLAID_CLIENT_ID,
     secret: process.env.PLAIID_SECRET,
-    env: plaid.environments.sandbox
+    env: PLAID.environments.sandbox
 });
 
 app.get('/create-link-token', async (req, res) => {
