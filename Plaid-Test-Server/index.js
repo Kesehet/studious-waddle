@@ -18,8 +18,8 @@ require('dotenv').config();
 console.log(PLAID.environments);
 
 const plaidClient = new PLAID.Client({
-    clientID: "",
-    secret: "",
+    clientID: "65301fbca34480001b50a4a8",
+    secret: "fbfcfcf691aace4753f9e9dba2a207",
     env: "sandbox",
 });
 
