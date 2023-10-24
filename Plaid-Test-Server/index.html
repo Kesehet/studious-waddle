@@ -2,48 +2,52 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
-
 <script>
-    (async ($)=>{
-        const fetchLinkToken = async () => {
-            const response = await fetch('/create-link-token');
-            const {linkToken} = await response.json();
-            return linkToken;
-        }
+  async function initializePlaid() {
+    const fetchLinkToken = async () => {
+        const response = await fetch('/create-link-token');
+        const data = await response.json();
+        console.log(data);  // Log the response data
+        const {link_token} = data;
+        return link_token;
+    }
 
-        const handler = Plaid.create (
-            {
-                "token" : await fetchLinkToken(),
-                "onSuccess" : async (publicToken, metadata) => {
-                    console.log(publicToken);
-                    console.log(metadata);
-                    await fetch('/token-exchange', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            public_token
-                        }),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                },
-                "onExit" : async (err, metadata) => {
-                    console.log(err);
-                    console.log(metadata);
-                },
-                "onEvent" : async (eventName, metadata) => {
-                    console.log(eventName);
-                    console.log(metadata);
-                }
 
-            }
-        )
-
-        $('#plaid-button').on ('click', () => {
-            handler.open();
+    const linkToken = await fetchLinkToken();
+    console.log(linkToken);  // Log the linkToken value
+    const handler = Plaid.create({
+      token: linkToken,
+      onSuccess: async (publicToken, metadata) => {
+        console.log(publicToken);
+        console.log(metadata);
+        await fetch('/token-exchange', {
+          method: 'POST',
+          body: JSON.stringify({
+            public_token: publicToken
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
         });
+      },
+      onExit: async (err, metadata) => {
+        console.log(err);
+        console.log(metadata);
+      },
+      onEvent: async (eventName, metadata) => {
+        console.log(eventName);
+        console.log(metadata);
+      }
+    });
 
-    })(jQuery);
+    $('#plaid-button').on('click', () => {
+      handler.open();
+    });
+  }
+
+  $(document).ready(function() {
+    initializePlaid();
+  });
 
 </script>
 
