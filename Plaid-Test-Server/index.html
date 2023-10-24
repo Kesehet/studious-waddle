@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,18 +19,6 @@
             background-color: #34495e;
             overflow: hidden;
         }
-        @keyframes blink {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.9;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
 
         .w3-container {
             background-color: #ffffff;
@@ -37,6 +26,15 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             animation: blink 30s linear infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.9;
+            }
         }
 
         button {
@@ -51,75 +49,74 @@
 
         .buttonColor {
             background-color: #34495e !important;
-            color:white !important;
+            color: white !important;
         }
 
         .buttonColor:hover {
             background-color: #fff !important;
             color: #34495e !important;
         }
-
     </style>
 </head>
+
 <body>
 
-<div class="w3-container w3-animate-opacity w3-card">
-    <h1 class="w3-animate-left">Quick Start!</h1>
-    <button id="plaid-button" class="w3-button w3-large  w3-animate-left buttonColor">Lets get you linked with Plaid ></button>
-</div>
+    <div class="w3-container w3-animate-opacity w3-card">
+        <h1 class="w3-animate-left">Quick Start!</h1>
+        <button id="plaid-button" class="w3-button w3-large w3-animate-left buttonColor">
+            Lets get you linked with Plaid >
+        </button>
+    </div>
+
+    <script>
+        async function fetchLinkToken() {
+            try {
+                const response = await fetch('/create-link-token');
+                const data = await response.json();
+                console.log(data);  // Log the response data
+                const { link_token } = data;
+                return link_token;
+            } catch (error) {
+                console.error('Error fetching link token:', error);
+            }
+        }
+
+        async function initializePlaid() {
+            try {
+                const linkToken = await fetchLinkToken();
+                console.log(linkToken);  // Log the linkToken value
+
+                const handler = Plaid.create({
+                    token: linkToken,
+                    onSuccess: async (publicToken, metadata) => {
+                        console.log(publicToken, metadata);
+                        await fetch('/token-exchange', {
+                            method: 'POST',
+                            body: JSON.stringify({ public_token: publicToken }),
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                    },
+                    onExit: (err, metadata) => {
+                        console.log(err, metadata);
+                    },
+                    onEvent: (eventName, metadata) => {
+                        console.log(eventName, metadata);
+                    }
+                });
+
+                $('#plaid-button').on('click', () => {
+                    handler.open();
+                });
+            } catch (error) {
+                console.error('Error initializing Plaid:', error);
+            }
+        }
+
+        $(document).ready(function() {
+            initializePlaid();
+        });
+    </script>
 
 </body>
-</html>
 
-
-<script>
-    async function fetchLinkToken() {
-        try {
-            const response = await fetch('/create-link-token');
-            const data = await response.json();
-            console.log(data);  // Log the response data
-            const { link_token } = data;
-            return link_token;
-        } catch (error) {
-            console.error('Error fetching link token:', error);
-        }
-    }
-
-    async function initializePlaid() {
-        try {
-            const linkToken = await fetchLinkToken();
-            console.log(linkToken);  // Log the linkToken value
-            
-            const handler = Plaid.create({
-                token: linkToken,
-                onSuccess: async (publicToken, metadata) => {
-                    console.log(publicToken, metadata);
-                    await fetch('/token-exchange', {
-                        method: 'POST',
-                        body: JSON.stringify({ public_token: publicToken }),
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                },
-                onExit: (err, metadata) => {
-                    console.log(err, metadata);
-                },
-                onEvent: (eventName, metadata) => {
-                    console.log(eventName, metadata);
-                }
-            });
-
-            $('#plaid-button').on('click', () => {
-                handler.open();
-            });
-        } catch (error) {
-            console.error('Error initializing Plaid:', error);
-        }
-    }
-
-    $(document).ready(function() {
-        initializePlaid();
-    });
-</script>
-
-</body>
 </html>
