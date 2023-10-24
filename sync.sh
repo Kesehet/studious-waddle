@@ -11,10 +11,10 @@ while true; do
     git fetch
 
     # Check for updates from the remote repository
-    UPDATES=$(git rev-list HEAD...origin/master --count)
+    UPDATES=$(git diff HEAD..origin/master)
 
     # If there are updates, pull the changes
-    if [ "$UPDATES" -ne 0 ]; then
+    if [ ! -z "$UPDATES" ]; then
         git pull
     fi
 
